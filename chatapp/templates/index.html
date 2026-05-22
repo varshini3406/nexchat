@@ -369,11 +369,32 @@
     color: var(--text-muted); font-size: 13px; line-height: 1.5;
   }
 
+  /* ── Mobile top bar ─────────────────────── */
+  .mobile-topbar {
+    display: none;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 16px;
+    background: var(--surface);
+    border-bottom: 1px solid var(--border);
+    position: sticky; top: 0; z-index: 5;
+  }
+  .mobile-topbar .logo-sm { font-size: 20px; }
+  .mobile-topbar-btns { display: flex; gap: 8px; }
+  .sidebar-overlay {
+    display: none;
+    position: fixed; inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 9;
+  }
+  .sidebar-overlay.open { display: block; }
+
   @media (max-width: 640px) {
-    :root { --sidebar: 100vw; }
+    :root { --sidebar: 85vw; }
     .sidebar { position: fixed; left: 0; top: 0; bottom: 0; z-index: 10; transform: translateX(-100%); transition: transform 0.3s; }
     .sidebar.open { transform: translateX(0); }
     .chat-area { width: 100%; }
+    .mobile-topbar { display: flex; }
   }
 </style>
 </head>
@@ -442,12 +463,23 @@
     </div>
   </div>
 
+  <!-- Sidebar overlay (mobile tap-to-close) -->
+  <div class="sidebar-overlay" id="sidebar-overlay" onclick="closeSidebar()"></div>
+
   <!-- Chat area -->
   <div class="chat-area" id="chat-area">
+    <!-- Mobile top bar -->
+    <div class="mobile-topbar">
+      <div class="logo-sm">Nex<span>Chat</span></div>
+      <div class="mobile-topbar-btns">
+        <div class="icon-btn" onclick="openNewChat()" title="New chat">+</div>
+        <div class="icon-btn" onclick="toggleSidebar()" title="Conversations">☰</div>
+      </div>
+    </div>
     <div class="empty-state" id="empty-state">
       <div class="empty-icon">💬</div>
       <h3>Welcome to NexChat</h3>
-      <p>Select a conversation or start a new one using the + button.</p>
+      <p>Tap ☰ to see conversations or + to start a new one.</p>
     </div>
     <div id="chat-view" style="display:none;flex-direction:column;flex:1;overflow:hidden">
       <div class="chat-header">
@@ -613,6 +645,7 @@ function filterConvs() {
 
 async function openConversation(conv) {
   currentConvId = conv.id;
+  closeSidebar();
   document.getElementById('empty-state').style.display = 'none';
   const cv = document.getElementById('chat-view');
   cv.style.display = 'flex';
@@ -676,9 +709,21 @@ async function deleteMessage(msgId) {
   // WS event will handle removal on all clients
 }
 
+// ── Mobile sidebar ────────────────────────────────────────────────────
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('open');
+}
+function closeSidebar() {
+  document.getElementById('sidebar').classList.remove('open');
+  document.getElementById('sidebar-overlay').classList.remove('open');
+}
+
 // ── New chat modal ────────────────────────────────────────────────────
 
 function openNewChat() {
+  closeSidebar();
   document.getElementById('new-chat-modal').classList.add('open');
   document.getElementById('new-chat-email').value = '';
   document.getElementById('new-chat-error').textContent = '';
