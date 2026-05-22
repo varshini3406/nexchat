@@ -31,6 +31,7 @@
     background: var(--bg);
     color: var(--text);
     height: 100vh;
+    height: 100dvh;
     overflow: hidden;
     display: flex;
     flex-direction: column;
@@ -102,7 +103,7 @@
 
   /* ── App layout ────────────────────────── */
   #app-screen { display: none; flex: 1; overflow: hidden; }
-  #app-screen.visible { display: flex; height: 100vh; }
+  #app-screen.visible { display: flex; height: 100vh; height: 100dvh; }
 
   /* ── Sidebar ─────────────────────────────*/
   .sidebar {
@@ -199,6 +200,8 @@
     flex-direction: column;
     background: var(--bg);
     position: relative;
+    min-height: 0;
+    overflow: hidden;
   }
 
   .empty-state {
@@ -227,6 +230,7 @@
 
   .messages-area {
     flex: 1;
+    min-height: 0;
     overflow-y: auto;
     padding: 24px;
     display: flex;
@@ -481,7 +485,7 @@
       <h3>Welcome to NexChat</h3>
       <p>Tap ☰ to see conversations or + to start a new one.</p>
     </div>
-    <div id="chat-view" style="display:none;flex-direction:column;flex:1;overflow:hidden">
+    <div id="chat-view" style="display:none;flex-direction:column;flex:1;overflow:hidden;min-height:0;">
       <div class="chat-header">
         <div class="avatar" id="chat-avatar" style="width:38px;height:38px;font-size:14px;border-radius:10px;"></div>
         <div class="chat-header-info">
